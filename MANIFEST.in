@@ -1,0 +1,9 @@
+include HISTORY.rst
+include LICENSE
+include README.rst
+
+exclude .coveragerc
+exclude .travis.yml
+exclude tox.ini
+
+prune docs
