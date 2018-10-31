@@ -2,6 +2,8 @@ from django.core.files.storage import Storage
 
 
 class NotImplementedStorage(Storage):
+    base_url = "/__not_implemented__/"
+
     def open(self, name, mode="rb"):
         raise NotImplementedError
 
