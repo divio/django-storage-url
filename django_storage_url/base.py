@@ -1,10 +1,9 @@
 import furl
 
 from django.conf import settings
-from django.core.files.storage import get_storage_class
 from django.utils.functional import LazyObject
 
-from .backends import SCHEMES
+from .backends import get_storage_class
 from .backends.not_implemented import NotImplementedStorage
 
 
@@ -15,7 +14,7 @@ class _DSNConfiguredStorage(LazyObject):
             self._wrapped = NotImplementedStorage()
         else:
             url = furl.furl(dsn)
-            storage_class = get_storage_class(SCHEMES[url.scheme])
+            storage_class = get_storage_class(url.scheme)
             # Django >= 1.9 now knows about LazyObject and sets them up before
             # serializing them. To work around this behavior, the storage class
             # itself needs to be deconstructible.
@@ -43,3 +42,9 @@ def dsn_configured_storage_class(setting_name):
 
 def dsn_configured_storage(setting_name):
     return dsn_configured_storage_class(setting_name)()
+
+
+def get_storage(dsn):
+    url = furl.furl(dsn)
+    storage_class = get_storage_class(url.scheme)
+    return storage_class(url)
