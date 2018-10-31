@@ -1,8 +1,8 @@
+import six
+
 from django.core.files.storage import (
     FileSystemStorage as DjangoFileSystemStorage,
 )
-
-import six
 
 
 class FileSystemStorage(DjangoFileSystemStorage):
