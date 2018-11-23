@@ -34,7 +34,9 @@ class AzureStorage(azure_storage.AzureStorage):
             custom_domain = dsn.args.get("domain")
             base_url = furl.furl()
             base_url.scheme = "https"
-            base_url.host = custom_domain or dsn.host
+            base_url.host = custom_domain or "{}.{}".format(
+                account_name, dsn.host
+            )
         base_url.path = container_name.rstrip("/") + "/"
 
         super(AzureStorage, self).__init__()
