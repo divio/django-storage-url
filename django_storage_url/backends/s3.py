@@ -9,6 +9,9 @@ class S3Storage(s3boto3.S3Boto3Storage):
         bucket_name = endpoint[0]
         storage_host = ".".join(endpoint[1:])
         location = six.text_type(dsn.path).lstrip("/")
+        region_name = (
+            dsn.args.get("region_name", endpoint[1].partition("-")[2]) or None
+        )
 
         addressing_style = dsn.args.get("addressing_style")
         if not addressing_style:
@@ -40,6 +43,7 @@ class S3Storage(s3boto3.S3Boto3Storage):
             addressing_style=addressing_style,
             signature_version=dsn.args.get("auth", None),
             location=location,
+            region_name=region_name,
             custom_domain=custom_domain,
             # TODO: Make the default `private` and explicitly set the ACL to
             #       `public-read` during provisioning
