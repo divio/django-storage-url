@@ -9,7 +9,9 @@ class S3Storage(s3boto3.S3Boto3Storage):
         bucket_name = endpoint[0]
         storage_host = ".".join(endpoint[1:])
         location = six.text_type(dsn.path).lstrip("/")
-        region_name = dsn.args.get("region_name", endpoint[1].partition("-")[2]) or None
+        region_name = (
+            dsn.args.get("region_name", endpoint[1].partition("-")[2]) or None
+        )
 
         addressing_style = dsn.args.get("addressing_style")
         if not addressing_style:
