@@ -41,6 +41,7 @@ class AzureStorage(azure_storage.AzureStorage):
 
         super(AzureStorage, self).__init__()
         self.account_name = account_name
+        self.account_key = None
         self.sas_token = sas_token
         self.azure_container = container_name
         self.azure_ssl = secure_urls
@@ -50,19 +51,6 @@ class AzureStorage(azure_storage.AzureStorage):
         self.base_url = str(base_url)
 
         self.ensure_container_exists()
-
-    @property
-    def service(self):
-        # This won't open a connection or anything,
-        # it's akin to a client
-        if self._service is None:
-            account = azure_storage.CloudStorageAccount(
-                account_name=self.account_name,
-                sas_token=self.sas_token,
-                is_emulated=self.is_emulated,
-            )
-            self._service = account.create_block_blob_service()
-        return self._service
 
     def url(self, name, expire=None):
         url = super(AzureStorage, self).url(name, expire)
