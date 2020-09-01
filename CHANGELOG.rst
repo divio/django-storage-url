@@ -6,6 +6,9 @@ CHANGELOG
 0.5.0 (unreleased)
 ==================
 
+* Added support for Django 3.1
+* Dropped support for Python 2.7 and Python 3.4
+* Dropped support for Django < 2.2
 * Changed ``default_acl`` to ``object_parameters``
 
 
