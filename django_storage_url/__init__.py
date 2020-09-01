@@ -1,11 +1,10 @@
+from .backends import get_storage_class, register_storage_class
 from .base import (
-    dsn_configured_storage,
-    dsn_configured_storage_class,
-    get_storage,
+    dsn_configured_storage, dsn_configured_storage_class, get_storage,
 )
-from .backends import register_storage_class, get_storage_class
 
-__version__ = "0.4.0"
+
+# for __version__ see setup.py
 
 __all__ = [
     "dsn_configured_storage",

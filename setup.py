@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 from setuptools import find_packages, setup
 
-from django_storage_url import __version__
+
+# we need to declare the version here
+__version__ = "0.4.0"
 
 
 REQUIREMENTS = [
+    'django>=2.2',
     'django-storages',
     'furl',
 ]
