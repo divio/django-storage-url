@@ -6,10 +6,6 @@
 .DS_Store
 .coverage/
 .eggs/
-.idea/
-.project/
-.pydevproject/
-.vscode/
 .settings/
 .tox/
 __pycache__/
