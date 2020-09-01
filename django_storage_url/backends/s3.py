@@ -47,7 +47,7 @@ class S3Storage(s3boto3.S3Boto3Storage):
             custom_domain=custom_domain,
             # TODO: Make the default `private` and explicitly set the ACL to
             #       `public-read` during provisioning
-            default_acl=dsn.args.get("acl", "public-read"),
+            object_parameters={"ACL": dsn.args.get("acl", "public-read")},
             # TODO: Allow to be set (especially once we support private ACLs)
             # TODO: Support querystring_auth=True + custom_domain
             querystring_auth=False,
