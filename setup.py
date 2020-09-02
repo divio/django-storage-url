@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 
 # we need to declare the version here
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 
 REQUIREMENTS = [
