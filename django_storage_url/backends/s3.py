@@ -1,4 +1,3 @@
-import six
 import furl
 from storages.backends import s3boto3
 
@@ -8,7 +7,7 @@ class S3Storage(s3boto3.S3Boto3Storage):
         endpoint = dsn.host.rsplit(".", 3)
         bucket_name = endpoint[0]
         storage_host = ".".join(endpoint[1:])
-        location = six.text_type(dsn.path).lstrip("/")
+        location = str(dsn.path).lstrip("/")
         region_name = (
             dsn.args.get("region_name", endpoint[1].partition("-")[2]) or None
         )
@@ -34,7 +33,7 @@ class S3Storage(s3boto3.S3Boto3Storage):
             base_url.host = custom_domain or dsn.host
             base_url.path = location.rstrip("/") + "/"
 
-        super(S3Storage, self).__init__(
+        super().__init__(
             access_key=dsn.username or "",
             secret_key=dsn.password or "",
             bucket_name=bucket_name,
@@ -47,7 +46,7 @@ class S3Storage(s3boto3.S3Boto3Storage):
             custom_domain=custom_domain,
             # TODO: Make the default `private` and explicitly set the ACL to
             #       `public-read` during provisioning
-            default_acl=dsn.args.get("acl", "public-read"),
+            object_parameters={"ACL": dsn.args.get("acl", "public-read")},
             # TODO: Allow to be set (especially once we support private ACLs)
             # TODO: Support querystring_auth=True + custom_domain
             querystring_auth=False,

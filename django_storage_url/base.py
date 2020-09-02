@@ -1,7 +1,7 @@
-import furl
-
 from django.conf import settings
 from django.utils.functional import LazyObject
+
+import furl
 
 from .backends import get_storage_class
 from .backends.not_implemented import NotImplementedStorage

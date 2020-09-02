@@ -1,14 +1,13 @@
 import base64
 
 import furl
-
 from azure.storage.blob.models import PublicAccess
 from storages.backends import azure_storage
 
 
 class AzureStorageFile(azure_storage.AzureStorageFile):
     def __init__(self, name, mode, storage):
-        super(AzureStorageFile, self).__init__(name, mode, storage)
+        super().__init__(name, mode, storage)
         if "w" not in mode:
             # Force early RAII-style exception if object does not exist
             if not storage.exists(name):
@@ -41,7 +40,7 @@ class AzureStorage(azure_storage.AzureStorage):
         container_name = str(dsn.path).strip("/") or "public-media"
         base_url.path = container_name + "/"
 
-        super(AzureStorage, self).__init__()
+        super().__init__()
         self.account_name = account_name
         self.account_key = None
         self.sas_token = sas_token
@@ -55,7 +54,7 @@ class AzureStorage(azure_storage.AzureStorage):
         self.ensure_container_exists(acl)
 
     def url(self, name, expire=None):
-        url = super(AzureStorage, self).url(name, expire)
+        url = super().url(name, expire)
         url = furl.furl(url)
         # TODO: How does this work when using a custom url
         #       with an additional domain?
