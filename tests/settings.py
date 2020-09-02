@@ -5,29 +5,19 @@ import sys
 urlpatterns = []
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:'
-    }
+    "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}
 }
 
-INSTALLED_APPS = [
-    'django_storage_url',
-    'tests',
-]
+INSTALLED_APPS = ["django_storage_url", "tests"]
 
-ROOT_URLCONF = 'tests.settings'
+ROOT_URLCONF = "tests.settings"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(os.path.dirname(__file__), 'templates')
-        ],
-        'OPTIONS': {
-            'debug': True,
-        },
-    },
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(os.path.dirname(__file__), "templates")],
+        "OPTIONS": {"debug": True},
+    }
 ]
 
 
@@ -35,11 +25,12 @@ def runtests():
     from django import setup
     from django.conf import settings
     from django.test.utils import get_runner
+
     settings.configure(
         INSTALLED_APPS=INSTALLED_APPS,
         ROOT_URLCONF=ROOT_URLCONF,
         DATABASES=DATABASES,
-        TEST_RUNNER='django.test.runner.DiscoverRunner',
+        TEST_RUNNER="django.test.runner.DiscoverRunner",
         TEMPLATES=TEMPLATES,
     )
     setup()
@@ -57,5 +48,5 @@ def run():
     sys.exit(failures)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

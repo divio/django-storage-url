@@ -21,9 +21,6 @@ class AzureStorage(azure_storage.AzureStorage):
         sas_token += "=" * (-len(sas_token) % 4)
         sas_token = base64.b64decode(sas_token).decode("ascii")
 
-        # TODO: Pass in via DSN
-        container_name = "public-media"
-
         if "url" in dsn.args:
             base_url = furl.furl(dsn.args.get("url"))
             secure_urls = base_url.scheme == "https"
@@ -36,7 +33,12 @@ class AzureStorage(azure_storage.AzureStorage):
             base_url.host = custom_domain or "{}.{}".format(
                 account_name, dsn.host
             )
-        base_url.path = container_name.rstrip("/") + "/"
+
+        # TODO: Make the default `private` and explicitly set the ACL to
+        #       `public-read` during provisioning
+        acl = dsn.args.get("acl", "public-read")
+        container_name = str(dsn.path).strip("/") or "public-media"
+        base_url.path = container_name + "/"
 
         super().__init__()
         self.account_name = account_name
@@ -49,7 +51,7 @@ class AzureStorage(azure_storage.AzureStorage):
         self.location = ""
         self.base_url = str(base_url)
 
-        self.ensure_container_exists()
+        self.ensure_container_exists(acl)
 
     def url(self, name, expire=None):
         url = super().url(name, expire)
@@ -59,10 +61,12 @@ class AzureStorage(azure_storage.AzureStorage):
         url.netloc = furl.furl(self.base_url).netloc
         return str(url)
 
-    def ensure_container_exists(self):
+    def ensure_container_exists(self, acl):
+        public_access = PublicAccess.Blob if acl == "public-read" else None
+        # TODO: If it exists, ensure that the ACL matches
         self.service.create_container(
             self.azure_container,
-            public_access=PublicAccess.Blob,
+            public_access=public_access,
             fail_on_exist=False,
         )
 

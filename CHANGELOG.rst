@@ -3,13 +3,20 @@ CHANGELOG
 =========
 
 
-0.5.0 (2020-09-01)
+0.6.0 (2020-09-01)
 ==================
 
 * Added support for Django 3.1
 * Dropped support for Python 2.7 and Python 3.4
 * Dropped support for Django < 2.2
 * Changed ``default_acl`` to ``object_parameters``
+
+
+0.5.0 (2020-05-28)
+==================
+
+ * Simplify AZ backend now that django-storages supports SAS tokens for Azure.
+ * Support ACLs and custom container names.
 
 
 0.4.0 (2018-12-06)
