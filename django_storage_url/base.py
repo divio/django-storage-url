@@ -11,19 +11,22 @@ class _DSNConfiguredStorage(LazyObject):
     def _setup(self):
         dsn = getattr(settings, self._setting_name, None)
         if not dsn:
-            self._wrapped = NotImplementedStorage()
+            args = []
+            storage_class = NotImplementedStorage
         else:
             url = furl.furl(dsn)
             storage_class = get_storage_class(url.scheme)
-            # Django >= 1.9 now knows about LazyObject and sets them up before
-            # serializing them. To work around this behavior, the storage class
-            # itself needs to be deconstructible.
-            storage_class = type(
-                storage_class.__name__,
-                (storage_class,),
-                {"deconstruct": self._deconstructor},
-            )
-            self._wrapped = storage_class(url)
+            args = [url]
+
+        # Django >= 1.9 now knows about LazyObject and sets them up before
+        # serializing them. To work around this behavior, the storage class
+        # itself needs to be deconstructible.
+        storage_class = type(
+            storage_class.__name__,
+            (storage_class,),
+            {"deconstruct": self._deconstructor},
+        )
+        self._wrapped = storage_class(*args)
 
 
 def dsn_configured_storage_class(setting_name):

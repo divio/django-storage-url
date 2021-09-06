@@ -3,13 +3,22 @@ CHANGELOG
 =========
 
 
+0.7.0 (2021-09-06)
+==================
+
+* Dropped support for Python 3.5.
+* Added support for Django 3.2.
+* Added support for ``querystring_auth`` to the S3 backend.
+* Fixed a compatibility issue with newer azure backends.
+
+
 0.6.0 (2020-09-01)
 ==================
 
-* Added support for Django 3.1
-* Dropped support for Python 2.7 and Python 3.4
-* Dropped support for Django < 2.2
-* Changed ``default_acl`` to ``object_parameters``
+* Added support for Django 3.1.
+* Dropped support for Python 2.7 and Python 3.4.
+* Dropped support for Django < 2.2.
+* Changed ``default_acl`` to ``object_parameters``.
 
 
 0.5.0 (2020-05-28)

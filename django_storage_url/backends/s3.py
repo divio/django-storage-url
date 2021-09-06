@@ -2,6 +2,10 @@ import furl
 from storages.backends import s3boto3
 
 
+def boolean_str(s):
+    return str(s).lower() in ["1", "true", "yes", "on"]
+
+
 class S3Storage(s3boto3.S3Boto3Storage):
     def __init__(self, dsn):
         endpoint = dsn.host.rsplit(".", 3)
@@ -47,9 +51,8 @@ class S3Storage(s3boto3.S3Boto3Storage):
             # TODO: Make the default `private` and explicitly set the ACL to
             #       `public-read` during provisioning
             object_parameters={"ACL": dsn.args.get("acl", "public-read")},
-            # TODO: Allow to be set (especially once we support private ACLs)
             # TODO: Support querystring_auth=True + custom_domain
-            querystring_auth=False,
+            querystring_auth=boolean_str(dsn.args.get("qs_auth", "false")),
             url_protocol=url_protocol,
             secure_urls=secure_urls,
             # TODO: Enforce encryption everywhere. Check status on non-AWS

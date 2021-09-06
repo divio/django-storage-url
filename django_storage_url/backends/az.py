@@ -1,7 +1,13 @@
 import base64
 
 import furl
-from azure.storage.blob.models import PublicAccess
+
+
+try:
+    from azure.storage.blob import PublicAccess
+except ImportError:
+    from azure.storage.blob.models import PublicAccess
+
 from storages.backends import azure_storage
 
 
