@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+0.8.0 (2021-11-19)
+==================
+
+* Added support for Azure account keys on top of SAS tokens.
+
 
 0.7.0 (2021-09-06)
 ==================

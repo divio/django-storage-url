@@ -1,4 +1,5 @@
 import base64
+from urllib.parse import parse_qs
 
 import furl
 
@@ -23,9 +24,8 @@ class AzureStorageFile(azure_storage.AzureStorageFile):
 class AzureStorage(azure_storage.AzureStorage):
     def __init__(self, dsn):
         account_name = dsn.username
-        sas_token = dsn.password
-        sas_token += "=" * (-len(sas_token) % 4)
-        sas_token = base64.b64decode(sas_token).decode("ascii")
+        credential = dsn.password
+        credential += "=" * (-len(credential) % 4)
 
         if "url" in dsn.args:
             base_url = furl.furl(dsn.args.get("url"))
@@ -49,7 +49,20 @@ class AzureStorage(azure_storage.AzureStorage):
         super().__init__()
         self.account_name = account_name
         self.account_key = None
-        self.sas_token = sas_token
+
+        try:
+            # SAS token
+            sas_token = base64.b64decode(credential).decode("ascii")
+        except UnicodeDecodeError:
+            # Account key (binary data)
+            self.token_credential = credential
+        else:
+            if "sig" in parse_qs(sas_token):
+                self.sas_token = sas_token
+            else:
+                # Account key (ascii)
+                self.token_credential = credential
+
         self.azure_container = container_name
         self.azure_ssl = secure_urls
         self.max_memory_size = 10 * 1024 ** 2
