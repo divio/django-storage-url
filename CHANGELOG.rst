@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+0.8.1 (2021-11-22)
+==================
+
+* Fix issue with Azure account keys vs token credential.
+
+
 0.8.0 (2021-11-19)
 ==================
 
