@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+0.9.0 (2022-08-11)
+==================
+
+* Remove the usage of ``secure_urls`` as it has been removed from
+  ``django-storages>=1.13``.
+
+
 0.8.1 (2021-11-22)
 ==================
 
