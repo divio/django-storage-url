@@ -2,13 +2,8 @@ import base64
 from urllib.parse import parse_qs
 
 import furl
-
-
-try:
-    from azure.storage.blob import PublicAccess
-except ImportError:
-    from azure.storage.blob.models import PublicAccess
-
+from azure.core.exceptions import ResourceExistsError
+from azure.storage.blob import PublicAccess
 from storages.backends import azure_storage
 
 
@@ -22,7 +17,7 @@ class AzureStorageFile(azure_storage.AzureStorageFile):
 
 
 class AzureStorage(azure_storage.AzureStorage):
-    def __init__(self, dsn):
+    def __init__(self, dsn, *, ensure_container_exists=True):
         account_name = dsn.username
         credential = dsn.password
         credential += "=" * (-len(credential) % 4)
@@ -48,20 +43,18 @@ class AzureStorage(azure_storage.AzureStorage):
 
         super().__init__()
         self.account_name = account_name
-        self.account_key = None
-
         try:
             # SAS token
             sas_token = base64.b64decode(credential).decode("ascii")
         except UnicodeDecodeError:
             # Account key (binary data)
-            self.token_credential = credential
+            self.account_key = credential
         else:
             if "sig" in parse_qs(sas_token):
                 self.sas_token = sas_token
             else:
                 # Account key (ascii)
-                self.token_credential = credential
+                self.account_key = credential
 
         self.azure_container = container_name
         self.azure_ssl = secure_urls
@@ -70,7 +63,8 @@ class AzureStorage(azure_storage.AzureStorage):
         self.location = ""
         self.base_url = str(base_url)
 
-        self.ensure_container_exists(acl)
+        if ensure_container_exists:
+            self.ensure_container_exists(acl)
 
     def url(self, name, expire=None):
         url = super().url(name, expire)
@@ -83,11 +77,13 @@ class AzureStorage(azure_storage.AzureStorage):
     def ensure_container_exists(self, acl):
         public_access = PublicAccess.Blob if acl == "public-read" else None
         # TODO: If it exists, ensure that the ACL matches
-        self.service.create_container(
-            self.azure_container,
-            public_access=public_access,
-            fail_on_exist=False,
-        )
+        try:
+            self.service_client.create_container(
+                self.azure_container,
+                public_access=public_access,
+            )
+        except ResourceExistsError:
+            pass
 
     def _open(self, name, mode="rb"):
         return AzureStorageFile(name, mode, self)
