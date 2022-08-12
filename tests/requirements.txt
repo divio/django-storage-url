@@ -2,3 +2,5 @@ tox
 coverage
 flake8
 ipdb
+
+boto3

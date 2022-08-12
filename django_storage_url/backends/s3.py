@@ -26,10 +26,8 @@ class S3Storage(s3boto3.S3Boto3Storage):
         if "url" in dsn.args:
             base_url = furl.furl(dsn.args.get("url"))
             url_protocol = "{}:".format(base_url.scheme)
-            secure_urls = url_protocol == "https"
             custom_domain = base_url.netloc
         else:
-            secure_urls = True
             url_protocol = "https:"
             custom_domain = dsn.args.get("domain")
             base_url = furl.furl()
@@ -54,7 +52,6 @@ class S3Storage(s3boto3.S3Boto3Storage):
             # TODO: Support querystring_auth=True + custom_domain
             querystring_auth=boolean_str(dsn.args.get("qs_auth", "false")),
             url_protocol=url_protocol,
-            secure_urls=secure_urls,
             # TODO: Enforce encryption everywhere. Check status on non-AWS
             #       providers.
             # encryption=True,

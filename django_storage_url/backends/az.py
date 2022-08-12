@@ -2,10 +2,8 @@ import base64
 from urllib.parse import parse_qs
 
 import furl
-
-from azure.storage.blob import PublicAccess
 from azure.core.exceptions import ResourceExistsError
-
+from azure.storage.blob import PublicAccess
 from storages.backends import azure_storage
 
 
