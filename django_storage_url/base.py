@@ -24,7 +24,10 @@ class _DSNConfiguredStorage(LazyObject):
         storage_class = type(
             storage_class.__name__,
             (storage_class,),
-            {"deconstruct": self._deconstructor},
+            {
+                "deconstruct": self._deconstructor,
+                "__module__": storage_class.__module__,
+            },
         )
         self._wrapped = storage_class(*args)
 

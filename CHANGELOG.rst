@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+
+0.9.1 (2022-09-07)
+==================
+
+* Make sure generated subclasses report the module of the superclass.
+
+
 0.9.0 (2022-08-11)
 ==================
 
