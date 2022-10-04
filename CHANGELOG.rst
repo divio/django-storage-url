@@ -3,6 +3,12 @@ CHANGELOG
 =========
 
 
+0.9.2 (2022-10-04)
+==================
+
+* Add support for pickling and unpickling storage backends.
+
+
 0.9.1 (2022-09-07)
 ==================
 

@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 
 # we need to declare the version here
-__version__ = "0.9.1"
+__version__ = "0.9.2"
 
 
 REQUIREMENTS = ["django>=2.2", "django-storages", "furl"]
