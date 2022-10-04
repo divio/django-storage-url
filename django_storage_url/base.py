@@ -26,6 +26,7 @@ class _DSNConfiguredStorage(LazyObject):
             (storage_class,),
             {
                 "deconstruct": self._deconstructor,
+                "__reduce__": self._pickler,
                 "__module__": storage_class.__module__,
             },
         )
@@ -42,6 +43,7 @@ def dsn_configured_storage_class(setting_name):
         {
             "_setting_name": setting_name,
             "_deconstructor": lambda self: (path, [setting_name], {}),
+            "_pickler": lambda self: (dsn_configured_storage, (setting_name,)),
         },
     )
 
