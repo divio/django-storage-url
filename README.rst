@@ -21,6 +21,14 @@ An implementation can be viewed on `aldryn-django <https://github.com/divio/aldr
 .. |django| image:: https://img.shields.io/badge/django-2.2,%203.0,%203.1-blue.svg
     :target: https://www.djangoproject.com/
 
+Linting
+=======
+
+This project uses [divio/lint](https://github.com/divio/lint):
+
+```bash
+make lint
+```
 
 Running tests
 =============

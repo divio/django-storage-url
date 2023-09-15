@@ -55,8 +55,14 @@ class PickleTestCase(TestCase):
 
         assert loaded._wrapped.__dict__ == storage._wrapped.__dict__
         assert loaded._wrapped.__module__ == storage._wrapped.__module__
-        assert loaded._wrapped.__class__.__name__ == storage._wrapped.__class__.__name__
-        assert loaded._wrapped.__class__.__bases__ == storage._wrapped.__class__.__bases__
+        assert (
+            loaded._wrapped.__class__.__name__
+            == storage._wrapped.__class__.__name__
+        )
+        assert (
+            loaded._wrapped.__class__.__bases__
+            == storage._wrapped.__class__.__bases__
+        )
 
     @override_settings(STORAGE_DSN="file:///test/media")
     def test_pickle_wrapped(self):
@@ -71,5 +77,11 @@ class PickleTestCase(TestCase):
 
         assert loaded._wrapped.__dict__ == storage._wrapped.__dict__
         assert loaded._wrapped.__module__ == storage._wrapped.__module__
-        assert loaded._wrapped.__class__.__name__ == storage._wrapped.__class__.__name__
-        assert loaded._wrapped.__class__.__bases__ == storage._wrapped.__class__.__bases__
+        assert (
+            loaded._wrapped.__class__.__name__
+            == storage._wrapped.__class__.__name__
+        )
+        assert (
+            loaded._wrapped.__class__.__bases__
+            == storage._wrapped.__class__.__bases__
+        )
