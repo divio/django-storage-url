@@ -17,7 +17,13 @@ class AzureStorageFile(azure_storage.AzureStorageFile):
 
 
 class AzureStorage(azure_storage.AzureStorage):
-    def __init__(self, dsn, *, ensure_container_exists=True):
+    def __init__(
+        self,
+        dsn,
+        *,
+        ensure_container_exists=True,
+        preserve_compressed_files=True
+    ):
         account_name = dsn.username
         credential = dsn.password
         credential += "=" * (-len(credential) % 4)
@@ -58,10 +64,11 @@ class AzureStorage(azure_storage.AzureStorage):
 
         self.azure_container = container_name
         self.azure_ssl = secure_urls
-        self.max_memory_size = 10 * 1024 ** 2
+        self.max_memory_size = 10 * 1024**2
         self.overwrite_files = True
         self.location = ""
         self.base_url = str(base_url)
+        self.preserve_compressed_files = preserve_compressed_files
 
         if ensure_container_exists:
             self.ensure_container_exists(acl)
@@ -87,3 +94,20 @@ class AzureStorage(azure_storage.AzureStorage):
 
     def _open(self, name, mode="rb"):
         return AzureStorageFile(name, mode, self)
+
+    def _get_content_settings_parameters(self, name, content=None):
+        # Azure will by default keep track files uploaded as gzip, and
+        # return it (during a read or an open) with a header set as gzip.
+        # With this header set, tools like requests, docker, curl, etc.
+        # automatically unzip the response, returning an uncompressed
+        # tar to the caller. This is problematic if downstream code
+        # expect a compressed tar.
+        params = super()._get_content_settings_parameters(
+            name, content=content
+        )
+        if (
+            self.preserve_compressed_files
+            and params["content_encoding"] == "gzip"
+        ):
+            params["content_encoding"] = "identity"
+        return params
