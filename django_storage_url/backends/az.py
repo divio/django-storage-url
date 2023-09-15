@@ -22,7 +22,7 @@ class AzureStorage(azure_storage.AzureStorage):
         dsn,
         *,
         ensure_container_exists=True,
-        preserve_compressed_files=True,
+        preserve_compressed_files=True
     ):
         account_name = dsn.username
         credential = dsn.password
