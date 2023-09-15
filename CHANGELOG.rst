@@ -2,10 +2,11 @@
 CHANGELOG
 =========
 
-0.9.3 - unreleased
-==================
+0.9.3 - (2023-09-15)
+====================
 
 * Fix Azure returning an "uncompress" header when the file was uploaded as compressed.
+
 
 0.9.2 (2022-10-04)
 ==================
