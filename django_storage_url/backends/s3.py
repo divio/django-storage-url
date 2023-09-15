@@ -55,7 +55,7 @@ class S3Storage(s3boto3.S3Boto3Storage):
             # TODO: Enforce encryption everywhere. Check status on non-AWS
             #       providers.
             # encryption=True,
-            max_memory_size=10 * 1024 ** 2,  # Roll over to disk after 10 MB
+            max_memory_size=10 * 1024**2,  # Roll over to disk after 10 MB
         )
 
         self.base_url = str(base_url)
