@@ -17,13 +17,11 @@ class AzureStorageFile(azure_storage.AzureStorageFile):
 
 
 class AzureStorage(azure_storage.AzureStorage):
-    def __init__(
-        self,
-        dsn,
-        *,
-        ensure_container_exists=True,
-        preserve_compressed_files=True
-    ):
+    mimetype_overrides = {
+        ("application/x-tar", "gzip"): ("application/x-gtar", None),
+    }
+
+    def __init__(self, dsn, *, ensure_container_exists=True):
         account_name = dsn.username
         credential = dsn.password
         credential += "=" * (-len(credential) % 4)
@@ -68,7 +66,6 @@ class AzureStorage(azure_storage.AzureStorage):
         self.overwrite_files = True
         self.location = ""
         self.base_url = str(base_url)
-        self.preserve_compressed_files = preserve_compressed_files
 
         if ensure_container_exists:
             self.ensure_container_exists(acl)
@@ -96,18 +93,24 @@ class AzureStorage(azure_storage.AzureStorage):
         return AzureStorageFile(name, mode, self)
 
     def _get_content_settings_parameters(self, name, content=None):
-        # Azure will by default keep track files uploaded as gzip, and
-        # return it (during a read or an open) with a header set as gzip.
-        # With this header set, tools like requests, docker, curl, etc.
-        # automatically unzip the response, returning an uncompressed
-        # tar to the caller. This is problematic if downstream code
-        # expect a compressed tar.
+        # Azure forwards the Content-Encoding header set during upload to
+        # download request responses (causing transparent decompression by most
+        # clients when it is set to ``gzip``).
+        # The superclass uses the return value of ``mimetypes.guess_type``,
+        # which is explicitly documented as not suitable for
+        # content *transfer* encoding.
+        #
+        # NOTE: The content-encoding header should probably *never* be set by
+        #       this storage backend.
+        #
+        # https://docs.python.org/3/library/mimetypes.html#mimetypes.guess_type
+        #
         params = super()._get_content_settings_parameters(
             name, content=content
         )
-        if (
-            self.preserve_compressed_files
-            and params["content_encoding"] == "gzip"
-        ):
-            params["content_encoding"] = "identity"
+        type_enc = (params["content_type"], params["content_encoding"])
+        (
+            params["content_type"],
+            params["content_encoding"],
+        ) = self.mimetype_overrides.get(type_enc, type_enc)
         return params

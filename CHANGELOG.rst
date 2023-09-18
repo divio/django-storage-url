@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+
+0.9.4 - (unreleased)
+====================
+
+* Use better logic for content-encoding headers.
+
+
 0.9.3 - (2023-09-15)
 ====================
 
