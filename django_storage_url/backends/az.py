@@ -21,7 +21,7 @@ class AzureStorage(azure_storage.AzureStorage):
         ("application/x-tar", "gzip"): ("application/x-gtar", None),
     }
 
-    def __init__(self, dsn, *, ensure_container_exists=True):
+    def __init__(self, dsn, *):
         account_name = dsn.username
         credential = dsn.password
         credential += "=" * (-len(credential) % 4)
@@ -39,10 +39,7 @@ class AzureStorage(azure_storage.AzureStorage):
                 account_name, dsn.host
             )
 
-        # TODO: Make the default `private` and explicitly set the ACL to
-        #       `public-read` during provisioning
-        acl = dsn.args.get("acl", "public-read")
-        container_name = str(dsn.path).strip("/") or "public-media"
+        container_name = str(dsn.path).strip("/")
         base_url.path = container_name + "/"
 
         super().__init__()
@@ -67,9 +64,6 @@ class AzureStorage(azure_storage.AzureStorage):
         self.location = ""
         self.base_url = str(base_url)
 
-        if ensure_container_exists:
-            self.ensure_container_exists(acl)
-
     def url(self, name, expire=None):
         url = super().url(name, expire)
         url = furl.furl(url)
@@ -77,17 +71,6 @@ class AzureStorage(azure_storage.AzureStorage):
         #       with an additional domain?
         url.netloc = furl.furl(self.base_url).netloc
         return str(url)
-
-    def ensure_container_exists(self, acl):
-        public_access = PublicAccess.Blob if acl == "public-read" else None
-        # TODO: If it exists, ensure that the ACL matches
-        try:
-            self.service_client.create_container(
-                self.azure_container,
-                public_access=public_access,
-            )
-        except ResourceExistsError:
-            pass
 
     def _open(self, name, mode="rb"):
         return AzureStorageFile(name, mode, self)

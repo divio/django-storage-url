@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+0.10.0 - (2023-09-26)
+=====================
+
+* Remove automatic container creation capabilities and ACL handling for Azure storage.
+
 
 0.9.4 - (2023-09-18)
 ====================
