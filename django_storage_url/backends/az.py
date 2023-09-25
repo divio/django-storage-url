@@ -21,7 +21,7 @@ class AzureStorage(azure_storage.AzureStorage):
         ("application/x-tar", "gzip"): ("application/x-gtar", None),
     }
 
-    def __init__(self, dsn, *):
+    def __init__(self, dsn):
         account_name = dsn.username
         credential = dsn.password
         credential += "=" * (-len(credential) % 4)
