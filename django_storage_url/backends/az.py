@@ -64,12 +64,16 @@ class AzureStorage(azure_storage.AzureStorage):
         self.location = ""
         self.base_url = str(base_url)
 
-    def url(self, name, expire=None):
+    def url(self, name, expire=None, reset_query=True):
         url = super().url(name, expire)
         url = furl.furl(url)
         # TODO: How does this work when using a custom url
         #       with an additional domain?
         url.netloc = furl.furl(self.base_url).netloc
+
+        if reset_query:
+            # By default, reset the query parameters to remove SAS tokens from the URL.
+            url.query = ""
         return str(url)
 
     def _open(self, name, mode="rb"):
