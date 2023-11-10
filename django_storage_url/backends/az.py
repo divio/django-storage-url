@@ -2,8 +2,6 @@ import base64
 from urllib.parse import parse_qs
 
 import furl
-from azure.core.exceptions import ResourceExistsError
-from azure.storage.blob import PublicAccess
 from storages.backends import azure_storage
 
 
@@ -35,9 +33,7 @@ class AzureStorage(azure_storage.AzureStorage):
             custom_domain = dsn.args.get("domain")
             base_url = furl.furl()
             base_url.scheme = "https"
-            base_url.host = custom_domain or "{}.{}".format(
-                account_name, dsn.host
-            )
+            base_url.host = custom_domain or "{}.{}".format(account_name, dsn.host)
 
         container_name = str(dsn.path).strip("/")
         base_url.path = container_name + "/"
@@ -92,9 +88,7 @@ class AzureStorage(azure_storage.AzureStorage):
         #
         # https://docs.python.org/3/library/mimetypes.html#mimetypes.guess_type
         #
-        params = super()._get_content_settings_parameters(
-            name, content=content
-        )
+        params = super()._get_content_settings_parameters(name, content=content)
         type_enc = (params["content_type"], params["content_encoding"])
         (
             params["content_type"],
