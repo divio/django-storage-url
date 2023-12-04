@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+0.12.0 - (2023-12-04)
+=====================
+
+* More robust bucket name resolution.
+* Stop using deprecated get_storage_class from Django.
+* Migrate to setup.cfg from setup.py.
+* Update build matrix to drop deprecated Python and Django versions.
+
+
+0.11.1 - (2023-11-10)
+=====================
+
+* Strip query parameters from Azure URLs to prevent the SAS from being exposed.
+
 
 0.10.1 - (2023-09-26)
 =====================
