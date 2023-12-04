@@ -1,6 +1,4 @@
-from django.core.files.storage import (
-    get_storage_class as django_get_storage_class,
-)
+from django.utils.module_loading import import_string
 
 
 SCHEMES = {
@@ -15,4 +13,4 @@ def register_storage_class(scheme, backend_path):
 
 
 def get_storage_class(scheme):
-    return django_get_storage_class(SCHEMES[scheme])
+    return import_string(SCHEMES[scheme])
