@@ -28,3 +28,39 @@ class S3BackendTestCase(TestCase):
         self.assertEqual(storage.querystring_auth, False)
         self.assertEqual(storage.url_protocol, "https:")
         self.assertEqual(storage.base_url, "https://custom.com/")
+
+    def test_get_s3_storage_regional(self):
+        storage = get_storage(
+            "s3://"
+            "access_key_id:secret_access_key@"
+            "bucket.example.com.s3.eu-west-1.amazonaws.com"
+        )
+
+        self.assertEqual(storage.bucket_name, "bucket.example.com")
+        self.assertEqual(storage.endpoint_url, "https://s3.eu-west-1.amazonaws.com/")
+        self.assertEqual(storage.region_name, "eu-west-1")
+
+    def test_get_s3_storage_regional_fips_dualstack(self):
+        storage = get_storage(
+            "s3://"
+            "access_key_id:secret_access_key@"
+            "bucket.example.com.s3-fips.dualstack.eu-west-1.amazonaws.com"
+        )
+
+        self.assertEqual(storage.bucket_name, "bucket.example.com")
+        self.assertEqual(
+            storage.endpoint_url,
+            "https://s3-fips.dualstack.eu-west-1.amazonaws.com/",
+        )
+        self.assertEqual(storage.region_name, "eu-west-1")
+
+    def test_get_s3_storage_regional_deprecated(self):
+        storage = get_storage(
+            "s3://"
+            "access_key_id:secret_access_key@"
+            "bucket.example.com.s3-eu-west-1.amazonaws.com"
+        )
+
+        self.assertEqual(storage.bucket_name, "bucket.example.com")
+        self.assertEqual(storage.endpoint_url, "https://s3-eu-west-1.amazonaws.com/")
+        self.assertEqual(storage.region_name, "eu-west-1")

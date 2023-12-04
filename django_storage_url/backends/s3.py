@@ -8,12 +8,37 @@ def boolean_str(s):
 
 class S3Storage(s3boto3.S3Boto3Storage):
     def __init__(self, dsn):
-        endpoint = dsn.host.rsplit(".", 3)
-        bucket_name = endpoint[0]
-        storage_host = ".".join(endpoint[1:])
-        location = str(dsn.path).lstrip("/")
-        region_name = dsn.args.get("region_name", endpoint[1].partition("-")[2]) or None
+        for needle in [
+            ".s3-accesspoint-fips.dualstack.",
+            ".s3-fips.dualstack.",
+            ".s3-accesspoint.dualstack.",
+            ".s3.dualstack.",
+            ".s3-accesspoint.",
+            ".s3-fips.",
+            ".s3-",
+            ".s3.",
+        ]:
+            bucket_name, marker, storage_host = dsn.host.partition(needle)
+            if not marker:
+                continue
+            region_name = storage_host.split(".", 1)[0]
+            if region_name == "amazonaws":
+                region_name = None
+            elif region_name in ["control", "control-fips"]:
+                # Variants with account_id in the endpoint are unsupported
+                continue
+            storage_host = marker.lstrip(".") + storage_host
+            break
+        else:
+            # Fall back to old static behavior
+            endpoint = dsn.host.rsplit(".", 3)
+            bucket_name = endpoint[0]
+            storage_host = ".".join(endpoint[1:])
+            region_name = (
+                dsn.args.get("region_name", endpoint[1].partition("-")[2]) or None
+            )
 
+        location = str(dsn.path).lstrip("/")
         addressing_style = dsn.args.get("addressing_style")
         if not addressing_style:
             if "." in bucket_name:
