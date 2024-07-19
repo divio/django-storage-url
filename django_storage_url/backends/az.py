@@ -3,6 +3,7 @@ from urllib.parse import parse_qs
 
 import furl
 from storages.backends import azure_storage
+from django.conf import settings
 
 
 class AzureStorageFile(azure_storage.AzureStorageFile):
@@ -56,7 +57,8 @@ class AzureStorage(azure_storage.AzureStorage):
         self.azure_container = container_name
         self.azure_ssl = secure_urls
         self.max_memory_size = 10 * 1024**2
-        self.overwrite_files = True
+        # The default is False in the superclass
+        self.overwrite_files = getattr(settings, "AZURE_OVERWRITE_FILES", True)
         self.location = ""
         self.base_url = str(base_url)
 
